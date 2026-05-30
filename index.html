@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#FDFBF7">
+  <meta name="description" content="«12 энергий» — мягкая самодиагностика через метафорические карты.">
+  <title>12 энергий</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- CDN: Telegram Mini App SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- CDN: Supabase (используется, только если заданы ключи в config.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- CDN: html2pdf — генерация итогового PDF -->
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- ───────── Шапка ───────── -->
+    <header class="app-header">
+      <div class="brand">12 энергий</div>
+      <button class="help-btn" type="button" data-action="help" aria-label="Чат помощи">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z"/>
+        </svg>
+        <span>Помощь</span>
+      </button>
+    </header>
+
+    <!-- ───────── Экраны ───────── -->
+    <main class="app-main">
+
+      <!-- 1. Приветствие -->
+      <section class="screen" data-screen="welcome">
+        <div class="cover cover-banner" data-cover>
+          <!-- Баннер первого экрана: assets/cover/welcome-banner.webp -->
+          <img src="assets/cover/Welcome banner.webp" alt="Встреча с Даром"
+               class="cover-img" onerror="this.style.display='none'">
+        </div>
+        <h1 class="screen-title">Добро пожаловать в «12 энергий»</h1>
+        <p class="screen-lead">
+          Это мягкая самодиагностика через метафорические карты. Здесь нет гаданий
+          и приговоров. Вы возьмёте один свой запрос и шаг за шагом увидите, какая
+          сфера жизни, энергия и состояние стоят за ним — и какой дар может быть
+          скрыт внутри.
+        </p>
+        <div class="audio-slot">
+          <div class="audio-title">Голосовое приветствие</div>
+          <audio controls preload="metadata" src="assets/audio/welcome.mp3"></audio>
+        </div>
+        <p class="hint">Совет: результат лучше записывать — в конце вы сможете скачать его в PDF.</p>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-action="start">Начать диагностику</button>
+          <button class="btn btn-ghost" type="button" data-action="how">Как это работает</button>
+        </div>
+      </section>
+
+      <!-- 2. Инструкция -->
+      <section class="screen" data-screen="instruction">
+        <h1 class="screen-title">Как работать с приложением</h1>
+        <p class="screen-lead">
+          Это мягкая самодиагностика, а не гадание. Вы берёте свой запрос и
+          проходите пять шагов.
+        </p>
+        <ol class="steps">
+          <li>
+            <span class="step-num">1</span>
+            <div><b>Запрос.</b> Сформулируйте вопрос или трудность, с которой хотите разобраться.</div>
+          </li>
+          <li>
+            <span class="step-num">2</span>
+            <div><b>Сфера.</b> Выберите карту — она покажет сферу жизни, где сейчас есть напряжение.</div>
+          </li>
+          <li>
+            <span class="step-num">3</span>
+            <div><b>Энергия.</b> К сфере привязана энергия — сила, которая за ней стоит.</div>
+          </li>
+          <li>
+            <span class="step-num">4</span>
+            <div><b>Состояние.</b> Определите, в каком состоянии сейчас эта энергия.</div>
+          </li>
+          <li>
+            <span class="step-num">5</span>
+            <div><b>Дар.</b> Откройте карту дара, который может быть скрыт за этим состоянием.</div>
+          </li>
+        </ol>
+        <p class="callout">
+          Не выбирайте логикой. Сначала сформулируйте запрос, сделайте вдох
+          и нажмите на карту, которая откликается.
+        </p>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-action="to-request">Подготовить запрос</button>
+        </div>
+      </section>
+
+      <!-- 4. Подготовка запроса -->
+      <section class="screen" data-screen="request">
+        <h1 class="screen-title">Сформулируйте свой запрос</h1>
+        <p class="screen-lead">
+          Запрос помогает не заходить в карты хаотично. Выберите вопрос или
+          трудность, с которой хотите поработать.
+        </p>
+        <div class="examples">
+          <p class="examples-title">Примеры запросов</p>
+          <ul>
+            <li>Что мешает мне зарабатывать больше?</li>
+            <li>Почему мне сложно построить близкие отношения?</li>
+            <li>Почему я постоянно устаю?</li>
+            <li>Что блокирует мою реализацию?</li>
+            <li>Почему я не чувствую радости?</li>
+            <li>Что мешает мне проявляться?</li>
+            <li>Почему я часто выбираю не себя?</li>
+          </ul>
+        </div>
+        <p class="hint">Для первого прохождения возьмите один главный запрос.</p>
+        <label class="field">
+          <span class="field-label">Ваш запрос</span>
+          <textarea name="request" rows="3" data-input="request"
+            placeholder="Запишите свой запрос здесь"></textarea>
+        </label>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-action="to-spheres" disabled>Мой запрос готов</button>
+        </div>
+      </section>
+
+      <!-- 5. Выбор сферы -->
+      <section class="screen" data-screen="sphere-pick">
+        <h1 class="screen-title">12 сфер жизни</h1>
+        <p class="screen-lead">
+          Сосредоточьтесь на запросе. Произнесите его про себя, сделайте
+          медленный вдох и выберите карту, которая откликается.
+        </p>
+        <div class="deck-grid" data-deck="spheres"></div>
+        <div class="actions">
+          <button class="btn btn-ghost" type="button" data-action="shuffle-spheres">Перемешать карты</button>
+        </div>
+      </section>
+
+      <!-- 6. Результат: сфера -->
+      <section class="screen" data-screen="sphere-result">
+        <h1 class="screen-title">Ваша сфера жизни</h1>
+        <div class="result-card-wrap" data-result-card="sphere"></div>
+        <div class="result-body" data-result-body="sphere"></div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-action="to-energy">Показать энергию</button>
+        </div>
+      </section>
+
+      <!-- 7. Энергия -->
+      <section class="screen" data-screen="energy">
+        <h1 class="screen-title">Энергия вашей сферы</h1>
+        <p class="screen-lead">
+          Эта энергия связана с выбранной сферой. Сфера показывает, где
+          проявляется запрос, а энергия — какая сила за этим стоит.
+        </p>
+        <div class="result-card-wrap" data-result-card="energy"></div>
+        <div class="result-body" data-result-body="energy"></div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-action="to-states-intro">Узнать состояние энергии</button>
+        </div>
+      </section>
+
+      <!-- 8. Обучение: 3 состояния -->
+      <section class="screen" data-screen="states-intro">
+        <h1 class="screen-title">В каком состоянии ваша энергия?</h1>
+        <p class="screen-lead">
+          Прежде чем выбрать карту, важно знать: энергия может быть в трёх состояниях.
+        </p>
+        <div class="audio-slot">
+          <div class="audio-title">Про 3 состояния</div>
+          <audio controls preload="metadata" src="assets/audio/states-intro.mp3"></audio>
+        </div>
+        <div class="states-list">
+          <div class="state-info">
+            <span class="state-dot" style="background:#E0B765"></span>
+            <div><b>Поддерживающее.</b> Энергия есть, но человек может не до конца её присваивать.</div>
+          </div>
+          <div class="state-info">
+            <span class="state-dot" style="background:#BCB4A6"></span>
+            <div><b>Нейтральное.</b> Энергия как будто не включена — человек может жить не своими целями.</div>
+          </div>
+          <div class="state-info">
+            <span class="state-dot" style="background:#C77F6A"></span>
+            <div><b>Напряжённое.</b> Энергия уходит в борьбу, контроль, усталость, страх или сопротивление.</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-action="to-state-pick">Выбрать состояние</button>
+        </div>
+      </section>
+
+      <!-- 9. Выбор состояния -->
+      <section class="screen" data-screen="state-pick">
+        <h1 class="screen-title">Выберите карту состояния</h1>
+        <p class="screen-lead">
+          Вспомните запрос, представьте сферу и почувствуйте энергию. Спросите
+          себя: в каком состоянии сейчас эта энергия во мне?
+        </p>
+        <div class="deck-row" data-deck="states"></div>
+        <div class="actions">
+          <button class="btn btn-ghost" type="button" data-action="shuffle-states">Перемешать</button>
+        </div>
+      </section>
+
+      <!-- 10. Результат: состояние -->
+      <section class="screen" data-screen="state-result">
+        <h1 class="screen-title">Состояние вашей энергии</h1>
+        <div class="result-card-wrap" data-result-card="state"></div>
+        <div class="result-body" data-result-body="state"></div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-action="to-gift-intro">Узнать про скрытый дар</button>
+        </div>
+      </section>
+
+      <!-- 11. Переход к дару -->
+      <section class="screen" data-screen="gift-intro">
+        <h1 class="screen-title">Хотите узнать, какой дар скрыт за этим состоянием?</h1>
+        <p class="screen-lead">
+          Иногда за трудностью, дефицитом или напряжением скрывается не слабость,
+          а дар, который человек пока не принимает. Давайте посмотрим, какой дар
+          просится к вам через этот запрос.
+        </p>
+        <div class="audio-slot">
+          <div class="audio-title">Голосовое сообщение</div>
+          <audio controls preload="metadata" src="assets/audio/gift-intro.mp3"></audio>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-action="to-gift-pick">Открыть карту дара</button>
+        </div>
+      </section>
+
+      <!-- 12. Выбор карты дара -->
+      <section class="screen" data-screen="gift-pick">
+        <h1 class="screen-title">Карта дара, таланта или способности</h1>
+        <p class="screen-lead">
+          Сосредоточьтесь на запросе. Когда будете готовы — вытяните карту из колоды.
+        </p>
+        <div class="gift-deck" data-gift-deck>
+          <div class="deck-card"></div>
+          <div class="deck-card"></div>
+          <div class="deck-card"></div>
+          <div class="deck-card deck-card-top"></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-ghost" type="button" data-action="shuffle-gifts">Перемешать</button>
+          <button class="btn btn-primary" type="button" data-action="draw-gift">Вытянуть карту</button>
+        </div>
+      </section>
+
+      <!-- 13. Результат: дар -->
+      <section class="screen" data-screen="gift-result">
+        <h1 class="screen-title">Ваш скрытый дар</h1>
+        <div class="result-card-wrap" data-result-card="gift"></div>
+        <div class="result-body" data-result-body="gift"></div>
+        <p class="callout callout-question">
+          Что изменится в моей жизни, если я начну признавать этот дар?
+        </p>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-action="to-summary">Посмотреть итог</button>
+          <button class="btn btn-ghost" type="button" data-action="to-agent-from-gift">Перейти к расшифровке у агента</button>
+        </div>
+      </section>
+
+      <!-- 14. Итоговый результат -->
+      <section class="screen" data-screen="summary">
+        <h1 class="screen-title">Ваш результат</h1>
+        <p class="screen-lead">Вот что показал ваш расклад. Итог можно скачать в PDF.</p>
+        <div class="summary-card" data-summary></div>
+        <div class="actions actions-grid">
+          <button class="btn btn-primary" type="button" data-action="download-pdf">Скачать PDF</button>
+          <button class="btn btn-soft" type="button" data-action="copy-agent">Скопировать текст для агента</button>
+          <button class="btn btn-soft" type="button" data-action="open-our-tg">Наш Telegram</button>
+          <button class="btn btn-soft" type="button" data-action="to-agent">Перейти к агенту</button>
+          <button class="btn btn-ghost" type="button" data-action="new-reading">Сделать новый расклад</button>
+        </div>
+      </section>
+
+      <!-- 15. Инструкция для GPT-агента -->
+      <section class="screen" data-screen="agent">
+        <h1 class="screen-title">Как получить глубокую расшифровку</h1>
+        <p class="screen-lead">
+          GPT-агент поможет глубже разобрать ваш результат. Чтобы он понял ваш
+          запрос, передайте ему данные расклада — проще всего скопировать
+          готовый текст.
+        </p>
+        <div class="agent-text-block" data-agent-block>
+          <p class="agent-text-label">Готовый текст для агента</p>
+          <pre class="agent-text" data-agent-text></pre>
+          <button class="btn btn-soft" type="button" data-action="copy-agent">Скопировать текст</button>
+        </div>
+        <p class="hint" data-agent-empty hidden>
+          Сначала пройдите расклад — тогда здесь появится готовый текст для агента.
+        </p>
+        <div class="actions">
+          <button class="btn btn-primary" type="button" data-action="open-agent-link">Перейти к агенту</button>
+        </div>
+      </section>
+
+      <!-- 16. Что дальше -->
+      <section class="screen" data-screen="ecosystem">
+        <h1 class="screen-title">Что дальше?</h1>
+        <p class="screen-lead">Несколько шагов, которые помогут продолжить.</p>
+        <div class="next-list">
+          <button class="next-item" type="button" data-action="open-agent-link">
+            <span class="next-title">Получить расшифровку у агента</span>
+            <span class="next-desc">Глубокий разбор вашего результата</span>
+          </button>
+          <button class="next-item" type="button" data-action="open-channel">
+            <span class="next-title">Поделиться инсайтом</span>
+            <span class="next-desc">Telegram-канал и чат для обмена</span>
+          </button>
+          <button class="next-item" type="button" data-action="open-mini-intensive">
+            <span class="next-title">Пройти мини-интенсив</span>
+            <span class="next-desc">Хочу разобраться глубже</span>
+          </button>
+          <button class="next-item" type="button" data-action="open-consultation">
+            <span class="next-title">Записаться на консультацию</span>
+            <span class="next-desc">Хочу личный разбор</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 17. Мои расклады -->
+      <section class="screen" data-screen="history">
+        <h1 class="screen-title">Мои расклады</h1>
+        <div class="history-note" data-history-note hidden></div>
+        <div class="history-list" data-history-list></div>
+        <div class="empty-state" data-history-empty hidden>
+          <p>Здесь будут ваши расклады. Пройдите первую диагностику — и она сохранится.</p>
+          <button class="btn btn-primary" type="button" data-action="start">Начать диагностику</button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ───────── Нижнее меню ───────── -->
+    <nav class="bottom-nav">
+      <button class="nav-item" type="button" data-nav="welcome">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.7 12 3l9 7.7M5.5 9.5V20h13V9.5"/></svg>
+        <span>Главная</span>
+      </button>
+      <button class="nav-item" type="button" data-nav="history">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h11M4 12h11M4 17.5h7M18.5 14.5v6M18.5 14.5l2.2 2.2M18.5 14.5l-2.2 2.2"/></svg>
+        <span>Мои расклады</span>
+      </button>
+      <button class="nav-item" type="button" data-nav="agent">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-10.6 6.8L4 20l1.7-5.4A7.5 7.5 0 1 1 20 11.5z"/></svg>
+        <span>Агент</span>
+      </button>
+      <button class="nav-item" type="button" data-nav="ecosystem">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6.5" cy="6.5" r="2.6"/><circle cx="17.5" cy="6.5" r="2.6"/><circle cx="6.5" cy="17.5" r="2.6"/><circle cx="17.5" cy="17.5" r="2.6"/></svg>
+        <span>Что дальше</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- ───────── Тост-уведомление ───────── -->
+  <div class="toast" data-toast hidden></div>
+
+  <!-- ───────── Диалог подтверждения ───────── -->
+  <div class="dialog-backdrop" data-dialog hidden>
+    <div class="dialog" role="dialog" aria-modal="true">
+      <p class="dialog-text" data-dialog-text></p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" type="button" data-dialog-cancel>Остаться</button>
+        <button class="btn btn-primary" type="button" data-dialog-confirm>Выйти</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───────── Скрипты ───────── -->
+  <script src="config.js"></script>
+  <script src="data/spheres.js"></script>
+  <script src="data/energies.js"></script>
+  <script src="data/states.js"></script>
+  <script src="data/gifts.js"></script>
+  <script src="storage.js"></script>
+  <script src="pdf.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
